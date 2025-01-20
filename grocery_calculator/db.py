@@ -17,8 +17,24 @@ class Database:
             self.con = duckdb.connect()
 
     def execute_query(self, text: str) -> List[Any]:
+        """
+        Used to execute SELECT statements and pull results from the
+        application db
+        """
         if not self.con:
             raise ConnectionError(
                 "Not yet connected to database. Have you tried running 'connect'?"
             )
         return self.con.sql(text).fetchall()
+
+    def update(self, text: str) -> None:
+        """Used for DML against the application db"""
+        if not self.con:
+            raise ConnectionError(
+                "Not yet connected to database. Have you tried running 'connect'?"
+            )
+
+        try:
+            self.con.sql(text)
+        except Exception as e:
+            raise e
