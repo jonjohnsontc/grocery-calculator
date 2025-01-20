@@ -1,0 +1,15 @@
+# ide files
+.bloop
+.idea
+.metals
+.vscode
+
+# python files
+venv
+*.egg-info/
+.mypy_cache
+__pycache__/
+
+# data and data files
+data
+data/*

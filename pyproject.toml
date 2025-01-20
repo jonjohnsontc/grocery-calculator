@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools >= 75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grocery_calculator"
+version = "0.1.dev0"
+description = "Build myself a grocery list"
+requires-python = ">=3.13"
+
+[tool.setuptools]
+packages = ["grocery_calculator"]
