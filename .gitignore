@@ -13,3 +13,6 @@ __pycache__/
 # data and data files
 data
 data/*
+
+# env files
+*/.env
