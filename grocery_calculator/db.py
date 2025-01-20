@@ -8,10 +8,13 @@ CONN_STR = os.getenv("DB_CONN_STR")
 
 class Database:
 
-    def connect(self) -> None:
-        if not CONN_STR:
+    def connect(self, test=False) -> None:
+        if not CONN_STR and not test:
             raise OSError("Database connection string 'DB_CONN_STR' not found")
-        self.con = duckdb.connect(CONN_STR)
+        elif CONN_STR:
+            self.con = duckdb.connect(CONN_STR)
+        else:
+            self.con = duckdb.connect()
 
     def execute_query(self, text: str) -> List[Any]:
         if not self.con:
