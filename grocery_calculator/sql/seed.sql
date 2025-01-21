@@ -35,8 +35,18 @@ CREATE TABLE IF NOT EXISTS store_locations (
     store_id INT NOT NULL,
     location_lat DECIMAL(9, 6) NOT NULL,
     location_long DECIMAL(9, 6) NOT NULL,
-    FOREIGN KEY (store_id) REFERENCES store_id (store_id),
+    FOREIGN KEY (store_id) REFERENCES stores (store_id),
     PRIMARY KEY (store_id, location_lat, location_long)
+);
+
+CREATE TABLE IF NOT EXISTS store_selection (
+    store_id INT NOT NULL,
+    item_id INT NOT NULL,
+    price DECIMAL(6, 2) NOT NULL,
+    last_found DATE,
+    FOREIGN KEY (store_id) REFERENCES stores (store_id),
+    FOREIGN KEY (item_id) REFERENCES products (item_id),
+    PRIMARY KEY (store_id, item_id)
 );
 
 CREATE TABLE IF NOT EXISTS coupons (
@@ -49,6 +59,13 @@ CREATE TABLE IF NOT EXISTS coupons (
     PRIMARY KEY (item_id, value, store_id, expiration)
 );
 
+CREATE TABLE IF NOT EXISTS store_coupon_policies (
+    store_id INT NOT NULL,
+    category TEXT NOT NULL,
+    min_spend DECIMAL(6, 2),
+    discount_type TEXT NOT NULL --still need to confirm what the values are here
+);
+
 CREATE TABLE IF NOT EXISTS price_history (
     store_id INT NOT NULL,
     item_id INT NOT NULL,
@@ -57,4 +74,13 @@ CREATE TABLE IF NOT EXISTS price_history (
     FOREIGN KEY (item_id) REFERENCES products (item_id),
     FOREIGN KEY (store_id) REFERENCES stores (store_id),
     PRIMARY KEY (store_id, item_id, updated_date, price)
-)
+);
+
+CREATE TABLE IF NOT EXISTS ingest_meta (
+    filename TEXT NOT NULL PRIMARY KEY,
+    store_name TEXT NOT NULL,
+    search_term TEXT NOT NULL,
+    pull_timestamp TIMESTAMP NOT NULL,
+    source_url TEXT NOT NULL,
+    status TEXT NOT NULL
+);

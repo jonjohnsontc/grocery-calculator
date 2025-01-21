@@ -11,6 +11,22 @@ class TestDB(unittest.TestCase):
 
         self.assertIsNotNone(db.con)
 
+    def test_connect_with_test_uses_in_memory_db(self):
+        db = Database()
+        db.connect(test=True)
+        actual = db.execute_query("pragma database_list")
+
+        # file column in database_list will be None
+        self.assertIsNone(actual[0][2])
+
+    def test_connect_without_test_uses_file_db(self):
+        db = Database()
+        db.connect()
+        actual = db.execute_query("pragma database_list")
+
+        # file column should be a string pointing to the correct file
+        self.assertIsNotNone(actual[0][2])
+
     def test_execute_query_submits_sql_and_returns_result(self):
         db = Database()
         db.connect(test=True)
