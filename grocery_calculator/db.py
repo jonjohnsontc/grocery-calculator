@@ -1,7 +1,7 @@
 import os
 import duckdb
 
-from typing import List, Any
+from typing import List, Any, Optional, Union
 
 CONN_STR = os.getenv("DB_CONN_STR")
 
@@ -16,25 +16,21 @@ class Database:
         else:
             self.con = duckdb.connect(CONN_STR)
 
-    def execute_query(self, text: str) -> List[Any]:
-        """
-        Used to execute SELECT statements and pull results from the
-        application db
-        """
+    def execute_query(self, text: str, params=None) -> Optional[List[Any]]:
+        self._validate()
+        res: Union[duckdb.DuckDBPyRelation, duckdb.DuckDBPyConnection]
+        if not params:
+            res = self.con.sql(text)
+        else:
+            res = self.con.execute(text, parameters=params)
+
+        if not res:
+            return None
+        return res.fetchall()
+
+    def _validate(self) -> None:
+        """Indicate whether db has a valid connection"""
         if not self.con:
             raise ConnectionError(
                 "Not yet connected to database. Have you tried running 'connect'?"
             )
-        return self.con.sql(text).fetchall()
-
-    def update(self, text: str) -> None:
-        """Used for DML against the application db"""
-        if not self.con:
-            raise ConnectionError(
-                "Not yet connected to database. Have you tried running 'connect'?"
-            )
-
-        try:
-            self.con.sql(text)
-        except Exception as e:
-            raise e

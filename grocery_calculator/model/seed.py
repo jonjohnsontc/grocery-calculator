@@ -13,7 +13,7 @@ ENV_FILE = Path(__file__).parents[1].joinpath(".env").as_posix()
 
 
 def seed_db(db: Database) -> None:
-    db.update(read_sql(SEED_QUERY_LOCATION))
+    db.execute_query(read_sql(SEED_QUERY_LOCATION))
 
 
 if __name__ == "__main__":
