@@ -44,7 +44,8 @@ def get_trader_joes():
     ts = datetime.now().isoformat()
     directory = f"{RAW_DATA_LOC}/{ts}"
     os.mkdir(directory)
-    write_json(data, variables["currentPage"], directory)
+    items = data["data"]["products"]["items"]
+    write_json(items, variables["currentPage"], directory)
 
     total_pages = data["data"]["products"]["page_info"]["total_pages"]
     total_products = data["data"]["products"]["total_count"]
@@ -64,7 +65,8 @@ def get_trader_joes():
                 f"Part {variables['currentPage']} - failed with {response.status_code}"
             )
         data = response.json()
-        write_json(data, variables["currentPage"], directory)
+        items = data["data"]["products"]["items"]
+        write_json(items, variables["currentPage"], directory)
         logging.info(f"part {variables['currentPage']} of {total_products} finished")
 
     return
