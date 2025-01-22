@@ -1,0 +1,54 @@
+# Taken from cmoog:traderjoes 
+# https://github.com/cmoog/traderjoes/blob/master/query.graphql
+# Licensed: MIT
+query SearchProducts($pageSize: Int, $currentPage: Int, $storeCode: String, $published: String = "1") {
+  products(
+    filter: {store_code: {eq: $storeCode}, published: {eq: $published}}
+    pageSize: $pageSize
+    currentPage: $currentPage
+  ) {
+    items {
+      product_label
+      primary_image
+      published
+      sku
+      url_key
+      name
+      item_description
+      item_title
+      item_characteristics
+      sales_size
+      sales_uom_code
+      sales_uom_description
+      country_of_origin
+      availability
+      new_product
+      promotion
+      price_range {
+        minimum_price {
+          final_price {
+            currency
+            value
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      retail_price
+      created_at
+      first_published_date
+      last_published_date
+      updated_at
+      __typename
+    }
+    total_count
+    page_info {
+      current_page
+      page_size
+      total_pages
+      __typename
+    }
+    __typename
+  }
+}

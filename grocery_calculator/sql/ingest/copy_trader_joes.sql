@@ -6,7 +6,7 @@ CREATE TEMP TABLE joes_ingest (
     store_code TEXT,
     availability TEXT
 )
-COPY joes_ingest FROM $1;
+COPY joes_ingest FROM ?;
 
 SELECT count(1) FROM joes_ingest as total_rows_ingested;
 
