@@ -28,12 +28,8 @@ class TestReader(unittest.TestCase):
         self.assertTrue(hasattr(reader, "first_query"))
         self.assertTrue(hasattr(reader, "second_query"))
 
-        self.assertEqual(
-            getattr(reader, "first_query"), "SELECT 42 as the_all_important_number"
-        )
-        self.assertEqual(
-            getattr(reader, "second_query"), "SELECT 27 as the_second_number"
-        )
+        self.assertEqual(reader.first_query, "SELECT 42 as the_all_important_number")
+        self.assertEqual(reader.second_query, "SELECT 27 as the_second_number")
 
 
 if __name__ == "__main__":

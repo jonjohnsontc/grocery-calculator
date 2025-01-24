@@ -2,8 +2,6 @@
 Utilities for reading in data or queries
 """
 
-from typing import List
-
 
 class Reader:
     """
