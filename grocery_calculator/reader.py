@@ -5,7 +5,8 @@ Utilities for reading in data or queries
 
 class Reader:
     """
-    Reads queries into a named mapping of queries to strings of query text
+    Reads queries into a named mapping of queries to strings of query text, similar
+    to libraries like aiosql.
     """
 
     raw: str
@@ -19,10 +20,6 @@ class Reader:
 
         self.mapping = {}
         self._parse_queries(self.raw)
-
-    @property
-    def num_queries(self) -> int:
-        return len(self.mapping)
 
     def _parse_queries(self, text: str):
         queries = text.split(";")
