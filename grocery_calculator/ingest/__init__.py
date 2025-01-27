@@ -9,8 +9,16 @@ class Ingest(ABC):
     def copy_data(self, location: str) -> None:
         pass
 
-    def validate(self) -> None:
+    def preprocess(self) -> dict:
         pass
 
-    def normalize(self) -> None:
+    def update(self, data) -> None:
         pass
+
+
+class TargetIngest(Ingest):
+    pass
+
+
+class TraderJoesIngest(Ingest):
+    pass
