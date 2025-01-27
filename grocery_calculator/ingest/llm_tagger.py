@@ -22,7 +22,7 @@ Please respond in JSON format.
 - product_type (varchar)
 - flavor_or_variant (varchar)
 - size (varchar, e.g, in oz)
-- packaging_type (varchar, e.g. bottle, box)
+- packaging_type (varchar, e.g. bottle, box, bag)
 - sale (boolean)
 - sale_value (float)
 - tags (array[varchar])

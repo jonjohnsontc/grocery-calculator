@@ -15,8 +15,8 @@ class Ingest(ABC):
     """
 
     def __init__(self):
-        self.conn = Database(CONN_STR)
-        self.conn.connect()
+        self.db = Database(CONN_STR)
+        self.db.connect()
 
     def copy_data(self, location: str) -> None:
         pass
