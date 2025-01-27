@@ -8,7 +8,7 @@ class TestSeed(unittest.TestCase):
 
     def test_seed_creates_all_tables(self):
         db = Database()
-        db.connect(test=True)
+        db.connect()
 
         seed_db(db)
 

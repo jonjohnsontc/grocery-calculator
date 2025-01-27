@@ -76,7 +76,6 @@ CREATE TEMP TABLE to_normalize AS
         "styles_ndsLink__GUaai" as brand_and_or_product,
         "styles_ndsTruncate__GRSDE" as product_detail,
         "styles_ndsTruncate__GRSDE (2)" as product_detail_2,
-        "styles_ndsLink__GUaai (3)" as product_detail_3,
         "sc-f9ebbc4c-3" as price,
         "sc-f9ebbc4c-3 (2)" as orig_price,
         "sc-f9ebbc4c-1" as price_per,
@@ -95,7 +94,6 @@ COPY (
         "styles_ndsLink__GUaai" as brand_and_or_product,
         "styles_ndsTruncate__GRSDE" as product_detail,
         "styles_ndsTruncate__GRSDE (2)" as product_detail_2,
-        "styles_ndsLink__GUaai (3)" as product_detail_3,
         "sc-f9ebbc4c-3" as price,
         "sc-f9ebbc4c-3 (2)" as orig_price,
         "sc-f9ebbc4c-1" as price_per,
@@ -122,7 +120,6 @@ CREATE TABLE normalized AS
         LOWER(brand_and_or_product) as brand_and_or_product,
         LOWER(product_detail) as product_detail,
         LOWER(product_detail_2) as product_detail_2,
-        LOWER(product_detail_3) as product_detail_3,
         LOWER(price) as price,
         LOWER(orig_price) as orig_price,
         LOWER(price_per) as price_per,
@@ -138,8 +135,19 @@ COPY normalized TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/t
     RETURN_FILES
 );
 
--- name: product-preprocess-for-tagging
-CREATE TABLE preprocess AS
+CREATE SEQUENCE IF NOT EXISTS preprocess_seq;
+
+-- name: create-preprocess-for-tagging
+CREATE TABLE IF NOT EXISTS target_preprocess (
+    id INTEGER DEFAULT nextval('preprocess_seq'),
+    product_detail TEXT,
+    price TEXT,
+    orig_price TEXT,
+    price_per TEXT
+);
+
+-- name: insert-into-preprocess
+INSERT INTO target_preprocess (product_detail, price, orig_price, price_per)
     SELECT
         COALESCE(brand_and_or_product, '') || ' | ' || COALESCE(product_detail, '') || ' | ' || COALESCE(product_detail_2, '') 
             as product_detail,
@@ -149,8 +157,10 @@ CREATE TABLE preprocess AS
     FROM normalized;
 
 -- name: copy-preprocess-table
-COPY preprocess TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target_preprocessed.csv' (
+COPY target_preprocess TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target_preprocessed.csv' (
     HEADER,
     DELIMITER ',',
     RETURN_FILES
 );
+
+SELECT COUNT(1) FROM target_preprocess as rows_copied;

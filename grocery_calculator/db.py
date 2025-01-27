@@ -1,20 +1,18 @@
-import os
 import duckdb
 
 from typing import List, Any, Optional, Union
 
-CONN_STR = os.getenv("DB_CONN_STR")
-
 
 class Database:
 
-    def connect(self, test=False) -> None:
-        if not CONN_STR and not test:
-            raise OSError("Database connection string 'DB_CONN_STR' not found")
-        elif test:
-            self.con = duckdb.connect()
+    def __init__(self, conn_str=None):
+        self.conn_str = conn_str
+
+    def connect(self) -> None:
+        if self.conn_str:
+            self.con = duckdb.connect(self.conn_str)
         else:
-            self.con = duckdb.connect(CONN_STR)
+            self.con = duckdb.connect(":memory:")
 
     def execute_query(self, text: str, params=None) -> Optional[List[Any]]:
         self._validate()
