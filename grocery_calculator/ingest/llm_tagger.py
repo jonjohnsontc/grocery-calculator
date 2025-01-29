@@ -6,6 +6,7 @@ import json
 import requests
 import sys
 
+from typing import List, Tuple
 
 ENDPOINT = "http://localhost:11434/api/generate"
 MODEL = "deepseek-r1:7b"
@@ -30,7 +31,27 @@ Please respond in JSON format.
 TEXT: """
 
 
-def tag_item(text):
+def tag_items(items: List[Tuple[int, str]]) -> List[tuple]:
+    tagged = []
+    for idx, descr in items:
+        data = tag_item(descr)
+        tagged.append(
+            (
+                idx,
+                data.get("product_name"),
+                data.get("product_type"),
+                data.get("flavor_or_variant"),
+                data.get("size"),
+                data.get("packaging_type"),
+                data.get("sale"),
+                data.get("sale_value"),
+                data.get("tags"),
+            )
+        )
+    return tagged
+
+
+def tag_item(text: str):
     payload = {
         "model": MODEL,
         "prompt": QUERY + text,

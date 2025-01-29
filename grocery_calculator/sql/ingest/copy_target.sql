@@ -114,8 +114,27 @@ COPY to_normalize TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input
     RETURN_FILES
 );
 
+CREATE TEMP TABLE distinct_to_normalize
+
+-- name: count-distinct-rows
+SELECT
+    COUNT(1) as distinct_rows
+FROM 
+    (
+        SELECT 
+            brand_and_or_product,
+            product_detail,
+            product_detail_2,
+            price,
+            orig_price,
+            price_per,
+            ratings
+        FROM to_normalize
+        GROUP BY brand_and_or_product, product_detail, product_detail_2, price, orig_price, price_per, ratings
+    );
+
 -- name: create-normalized-tabe
-CREATE TABLE normalized AS
+CREATE TEMP TABLE normalized AS
     SELECT
         LOWER(brand_and_or_product) as brand_and_or_product,
         LOWER(product_detail) as product_detail,
