@@ -51,3 +51,18 @@ class TestDB(unittest.TestCase):
         self.assertEqual(len(actual), 1)
         self.assertEqual(actual[0][0], 12)
         self.assertEqual(actual[0][1], "hawk")
+
+    def test_execute_many_executes_all_stmts_against_store(self):
+        db = Database()
+        db.connect()
+
+        db.execute_query("create table test (id INTEGER, val TEXT)")
+        db.execute_many(
+            "insert into test (id, val) VALUES (?, ?)",
+            [(12, "hawk"), (18, "ferdinand"), (2, "aj hawk")],
+        )
+        actual = db.execute_query("select * from test order by id")
+
+        self.assertEqual(len(actual), 3)
+        self.assertEqual(actual[0][0], 2)
+        self.assertEqual(actual[2][1], "ferdinand")

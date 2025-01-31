@@ -24,7 +24,6 @@ class TargetIngest(Ingest):
         reader = Reader(f"{INGEST_SQL_FOLDER}/preprocess_target.sql")
         data = self.db.execute_query(reader.get_target_detail)
         for tagged_items in self.tag_items(data, chunk_size=TAGGING_CHUNK_SIZE):
-            self.db.execute_query(reader.copy_tagged_data, tagged_items)
             pass
         return
 

@@ -182,4 +182,19 @@ COPY target_preprocess TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_
     RETURN_FILES
 );
 
+-- name: count-rows-copied  
 SELECT COUNT(1) FROM target_preprocess as rows_copied;
+
+-- name: create-preprocess-tagged
+-- I'm still not entirely sure how I'm handling preprocessed items, whether 
+-- they're all together, 
+CREATE TABLE IF NOT EXISTS preprocess_tagged (
+    ppid INTEGER,
+    product_name TEXT,
+    flavor_or_variant TEXT,
+    size TEXT,
+    packaging_type TEXT,
+    sale BOOLEAN,
+    sale_value DECIMAL,
+    tags TEXT[] 
+);

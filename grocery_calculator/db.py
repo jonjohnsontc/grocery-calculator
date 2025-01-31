@@ -26,6 +26,18 @@ class Database:
             return None
         return res.fetchall()
 
+    def execute_many(self, text: str, params=None) -> Optional[List[Any]]:
+        self._validate()
+        res: Union[duckdb.DuckDBPyRelation, duckdb.DuckDBPyConnection]
+        if not params:
+            res = self.con.executemany(text)
+        else:
+            res = self.con.executemany(text, parameters=params)
+
+        if not res:
+            return None
+        return res.fetchall()
+
     def _validate(self) -> None:
         """Indicate whether db has a valid connection"""
         if not self.con:
