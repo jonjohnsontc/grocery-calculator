@@ -2,5 +2,13 @@
 SELECT id, product_detail FROM target_preprocess;
 
 --name: copy-tagged-data
--- TODO: Not yet implemented
-INSERT INTO preprocess_tagged ()
+INSERT INTO preprocess_tagged (
+    ppid, 
+    product_name,
+    flavor_or_variant,
+    size,
+    packaging_type,
+    sale,
+    sale_value,
+    tags
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?);

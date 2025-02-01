@@ -1,5 +1,10 @@
 """
-Utilities for reading in data or queries
+Utilities for reading in data or queries.
+
+Right now, there are two different ways of using queries in this project. One is
+executing the entire contents of a .sql file, and the other reads in the content
+of a .sql file into an object which can access any queries contained within based
+on their name passed through.
 """
 
 

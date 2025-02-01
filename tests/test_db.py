@@ -52,7 +52,7 @@ class TestDB(unittest.TestCase):
         self.assertEqual(actual[0][0], 12)
         self.assertEqual(actual[0][1], "hawk")
 
-    def test_execute_many_executes_all_stmts_against_store(self):
+    def test_execute_many_executes_all_bound_stmts_against_store(self):
         db = Database()
         db.connect()
 

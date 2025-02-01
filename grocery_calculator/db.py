@@ -26,13 +26,10 @@ class Database:
             return None
         return res.fetchall()
 
-    def execute_many(self, text: str, params=None) -> Optional[List[Any]]:
+    def execute_many(self, text: str, params: list) -> Optional[List[Any]]:
         self._validate()
         res: Union[duckdb.DuckDBPyRelation, duckdb.DuckDBPyConnection]
-        if not params:
-            res = self.con.executemany(text)
-        else:
-            res = self.con.executemany(text, parameters=params)
+        res = self.con.executemany(text, parameters=params)
 
         if not res:
             return None
