@@ -1,6 +1,7 @@
 from os import getenv
 from typing import List, Tuple, Generator
 
+from grocery_calculator.logging import setup_logger
 from grocery_calculator.ingest import Ingest, INGEST_SQL_FOLDER
 from grocery_calculator.reader import read_sql, Reader
 from grocery_calculator.ingest.llm_tagger import tag_item
