@@ -1,19 +1,9 @@
-SET VARIABLE filepath = '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target/v0/2025-01-23T16:02:54-08:00/*.csv';
-SET VARIABLE trunc_file = SUBSTR(getvariable('filepath'), POSITION('v0' in getvariable('filepath')));
-SET VARIABLE search_term = 'placeholder';
-
 -- name: create-target-raw
 -- Setup to run on v0 data
 CREATE TABLE target_raw AS SELECT * FROM read_csv(
-    getvariable('filepath'),
+    ?,
     union_by_name=true,
     filename=true
-);
-
-COPY target_raw TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target_raw.csv' (
-    HEADER, 
-    DELIMITER ',', 
-    RETURN_FILES
 );
 
 -- name: count-target-raw
@@ -51,7 +41,7 @@ LEFT JOIN existing_columns USING (column_name);
 WITH file_check AS (
     SELECT COUNT(*) AS file_exists
     FROM ingest_meta
-    WHERE filename = getvariable('trunc_file')
+    WHERE filename = ?
 )
 SELECT CASE
     WHEN file_exists = 0 THEN 'process_file'
@@ -62,9 +52,9 @@ FROM file_check;
 --name: add-file
 INSERT INTO ingest_meta (filename, store_name, search_term, pull_timestamp, source_url, status)
     VALUES (
-        getvariable('trunc_file'),
+        ?,
         'target',
-        getvariable('search_term'),
+        ?,
         now(),
         'https://www.target.com/',
         'processing'
@@ -101,20 +91,20 @@ COPY (
     FROM target_raw
     EXCEPT
     SELECT * FROM to_normalize
-) TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target_filtered_out.csv' (
+) TO ? (
     HEADER, 
     DELIMITER ',', 
     RETURN_FILES
 );
 
 -- name: export-to-normalize
-COPY to_normalize TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target_to_normalize.csv' (
+COPY to_normalize TO ? (
     HEADER,
     DELIMITER ',',
     RETURN_FILES
 );
 
-CREATE TEMP TABLE distinct_to_normalize
+CREATE TEMP TABLE distinct_to_normalize;
 
 -- name: count-distinct-rows
 SELECT
@@ -148,7 +138,7 @@ CREATE TEMP TABLE normalized AS
     AND NOT contains(price, '-');
 
 -- name: copy-normalized
-COPY normalized TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target_normalized.csv' (
+COPY normalized TO ? (
     HEADER,
     DELIMITER ',',
     RETURN_FILES
@@ -176,7 +166,7 @@ INSERT INTO target_preprocess (product_detail, price, orig_price, price_per)
     FROM normalized;
 
 -- name: copy-preprocess-table
-COPY target_preprocess TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input/target_preprocessed.csv' (
+COPY target_preprocess TO ? (
     HEADER,
     DELIMITER ',',
     RETURN_FILES

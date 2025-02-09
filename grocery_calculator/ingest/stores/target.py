@@ -1,3 +1,5 @@
+import sys
+
 from os import getenv
 from typing import List, Tuple, Generator
 
@@ -14,9 +16,10 @@ class TargetIngest(Ingest):
     def __init__(self, conn_str=None):
         super().__init__(conn_str)
         self._tag_item = tag_item
+        self.logger = setup_logger(self.__module__)
 
     def copy_data(self, location):
-        ingest_query = read_sql(f"{INGEST_SQL_FOLDER}/copy_target.sql")
+        ingest_query = read_sql(f"{INGEST_SQL_FOLDER}/copy_target_2.sql")
         result = self.db.execute_query(ingest_query, location)
         num_rows = result[0][0]
         return num_rows
@@ -24,9 +27,11 @@ class TargetIngest(Ingest):
     def preprocess(self):
         reader = Reader(f"{INGEST_SQL_FOLDER}/preprocess_target.sql")
         data = self.db.execute_query(reader.get_target_detail)
+        rows_tagged = 0
         for tagged_items in self.tag_items(data, chunk_size=TAGGING_CHUNK_SIZE):
             self.db.execute_many(reader.copy_tagged_data, tagged_items)
-            # TODO: I want to log here -> copied TAGGING_CHUNK_SIZE items to table
+            rows_tagged += len(tagged_items)
+            self.logger.info("%d rows tagged for target", rows_tagged)
         return
 
     def update(self):
@@ -50,11 +55,3 @@ class TargetIngest(Ingest):
 
         if tagged:
             yield tagged.copy()
-
-
-def ingest_target_v0(location: str) -> None:
-    pass
-
-
-if __name__ == "__main__":
-    pass
