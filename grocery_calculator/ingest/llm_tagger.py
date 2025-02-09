@@ -3,13 +3,14 @@ Communicating with a LLM to tag scraped product information
 """
 
 import json
+import os
 import requests
 import sys
 
 from typing import List, Tuple
 
-ENDPOINT = "http://localhost:11434/api/generate"
-MODEL = "deepseek-r1:7b"
+ENDPOINT = os.getenv("TAGGING_ENDPOINT", "http://localhost:11434/api/generate")
+MODEL = os.getenv("TAGGING_MODEL", "deepseek-r1:7b")
 QUERY = """
 Given the description below of a product (marked after TEXT) available at an online retailer, 
 could you extract any relevant entities? I'd like to know the following (with data types and examples

@@ -102,8 +102,6 @@ COPY to_normalize TO '/Users/jonjohnson/dev/bb-grocery-calculator/data/raw_input
     RETURN_FILES
 );
 
-CREATE TEMP TABLE distinct_to_normalize;
-
 -- name: count-distinct-rows
 SELECT
     COUNT(1) as distinct_rows
