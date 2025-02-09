@@ -15,7 +15,7 @@ proj_name = get_project_details()["project"]["name"]
 def get_parser() -> argparse.ArgumentParser:
     source_names = SOURCES
     parser = argparse.ArgumentParser(
-        prog=f"{proj_name} - ingest - copy data", description=__doc__
+        prog=f"{proj_name} - preprocess", description=__doc__
     )
     parser.add_argument(
         "--store",
@@ -24,9 +24,8 @@ def get_parser() -> argparse.ArgumentParser:
         help=f"Name of store, currently {source_names} are valid",
     )
     parser.add_argument(
-        "--folder", "-f", required=True, help="folder where raw data is stored"
+        "--db", required=False, help="location of database file", default=DB
     )
-    parser.add_argument("--db", required=False, default=DB)
     return parser
 
 
