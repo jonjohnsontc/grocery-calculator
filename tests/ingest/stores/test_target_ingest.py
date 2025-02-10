@@ -1,7 +1,6 @@
 import unittest
 import unittest.mock
 
-from tests import FIXTURES_DIR
 from grocery_calculator.ingest.stores.target import TargetIngest
 
 
