@@ -177,10 +177,11 @@ SELECT COUNT(1) FROM target_preprocess as rows_copied;
 CREATE TABLE IF NOT EXISTS preprocess_tagged (
     ppid INTEGER,
     product_name TEXT,
+    product_type TEXT,
     flavor_or_variant TEXT,
     size TEXT,
     packaging_type TEXT,
-    sale BOOLEAN,
-    sale_value DECIMAL,
+    sale TEXT,  -- type should be boolean, but we can't trust ai outputs outside of str 
+    sale_value TEXT, -- type should be decimal, but we can't trust ai outputs outside of str 
     tags TEXT[] 
 );

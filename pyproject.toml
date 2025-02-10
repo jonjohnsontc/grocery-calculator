@@ -11,3 +11,7 @@ dependencies = ["duckdb==1.1.*"]
 
 [tool.setuptools]
 packages = ["grocery_calculator"]
+
+[project.scripts]
+copy_data="grocery_calculator.ingest.copy_data:main"
+preprocess="grocery_calculator.ingest.preprocess:main" 

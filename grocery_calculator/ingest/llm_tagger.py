@@ -7,7 +7,7 @@ import os
 import requests
 import sys
 
-from typing import List, Tuple
+from grocery_calculator.logging import setup_logger
 
 ENDPOINT = os.getenv("TAGGING_ENDPOINT", "http://localhost:11434/api/generate")
 MODEL = os.getenv("TAGGING_MODEL", "deepseek-r1:7b")
@@ -31,6 +31,19 @@ Please respond in JSON format.
 
 TEXT: """
 
+TAGGED_ATTRS = {
+    "product_name": str,
+    "product_type": str,
+    "flavor_or_variant": str,
+    "size": str,
+    "packaging_type": str,
+    "sale": bool,
+    "sale_value": float,
+    "tags": list,
+}
+
+logger = setup_logger(__name__)
+
 
 def tag_item(text: str):
     payload = {
@@ -50,6 +63,25 @@ def tag_item(text: str):
 
     data = response.json()["response"]
     data = json.loads(data.strip())
+    logger.info("response from LLM is %s", data)
+
+    remaining_attrs = TAGGED_ATTRS.copy()
+    logger.info("expected tagged attributes are %s", remaining_attrs)
+
+    to_delete = []
+    for attr in data:
+        if attr not in remaining_attrs:
+            logger.warning("unknown attribute found - %s", attr)
+            to_delete.append(attr)
+        else:
+            del remaining_attrs[attr]
+
+    for attr in to_delete:
+        del data[attr]
+
+    for attr in remaining_attrs:
+        logger.warning("could not find attribute %s. setting to null", attr)
+        data[attr] = None
 
     return data
 
