@@ -98,3 +98,58 @@ I think language models are going to help out in two general areas, tagging / ca
 ## User Journey
 
 I type up grocery list and input it into the cli tool. The cli tool spits out a grocery plan
+
+```md
+# Example Plan
+
+- Bagels
+- 2lbs Pasta
+- Extra Creamy Oatmilk
+- Coca-Cola 2 liter
+- Potato Bread
+- 80/20 ground beef 1lb
+
+```
+
+I think, for simplicity's sake, I'm just going to return a JSON document with objects representing different grocery trips where I can get all of the foods
+
+```json
+{   
+    "no_trips": 2,
+    "total_cost": 89.91, 
+    "trips": [
+    -- See below
+    ]
+}
+
+-- Here is the trips list:
+
+[
+    {
+        "store": "ralphs",
+        "location": "3927 Hollywood Blvd., Los Angeles, CA 90027",
+        "store_total": "29.27",
+        "items": [
+                    {
+                        "search_term": "Bagels",
+                        "product_name": "Thomas' Original Bagels",
+                        "qty": 1,
+                        "price": "3.99"
+                    }
+                 ]
+    }
+]
+```
+
+## CLI App | Interface
+
+I imagine I will call the app like:
+
+```bash
+grocery_calculator list.txt --no-stores 2
+```
+
+The app will parse the text file into a list of groceries, and then run a search for matching entities in the database. Any entities that can't be matched will be logged as an error, but will not prevent the application from returning with a partial list of groceries to buy.
+
+After conducting a search for all parsed items, we will (normalize them for solving (tbd)), and return the list of groceries to purchase in json format.
+

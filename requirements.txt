@@ -1,4 +1,5 @@
 duckdb==1.1.*
+pulp==3.0.*
 
 # dist
 setuptools[core]

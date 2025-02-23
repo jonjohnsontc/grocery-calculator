@@ -66,7 +66,7 @@ def tag_item(text: str):
     logger.info("response from LLM is %s", data)
 
     remaining_attrs = TAGGED_ATTRS.copy()
-    logger.info("expected tagged attributes are %s", remaining_attrs)
+    logger.debug("expected tagged attributes are %s", remaining_attrs)
 
     to_delete = []
     for attr in data:

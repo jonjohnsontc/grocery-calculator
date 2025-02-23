@@ -1,9 +1,8 @@
-import sys
+import json
 
 from os import getenv
-from typing import List, Tuple, Generator
+from typing import List, Tuple
 
-from grocery_calculator.logging import setup_logger
 from grocery_calculator.ingest import Ingest, INGEST_SQL_FOLDER
 from grocery_calculator.reader import read_sql, Reader
 from grocery_calculator.ingest.llm_tagger import tag_item
@@ -49,12 +48,20 @@ class TargetIngest(Ingest):
     def update(self):
         return
 
+    # TODO: This functionality should be in llm_tagger
     def tag_items(self, items: List[Tuple[int, str]]) -> List[tuple]:
         tagged = []
         for item_idx, item_descr in items:
             self.logger.info("item_idx %d", item_idx)
             self.logger.info("item descr %s", item_descr)
-            res = self._tag_item(item_descr)
+            try:
+                res = self._tag_item(item_descr)
+            except json.JSONDecodeError:
+                self.logger.error(
+                    "LLM Submitted invalid JSON response for item_idx %s", item_idx
+                )
+                continue
+
             self.logger.info("Item tagged info %s", res)
             tagged.append(
                 (
