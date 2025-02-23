@@ -1,3 +1,4 @@
+import logging
 import unittest
 import unittest.mock
 
@@ -20,7 +21,8 @@ class TestTargetIngest(unittest.TestCase):
 
         ti = TargetIngest()
         ti._tag_item = unittest.mock.MagicMock(return_value=TEST_TAGGED_ITEM)
-
+        logger = logging.getLogger()
+        logger.setLevel(logging.CRITICAL)
         items = [
             (
                 1,
@@ -37,3 +39,4 @@ class TestTargetIngest(unittest.TestCase):
         ]
         tagged = ti.tag_items(items)
         self.assertEqual(len(tagged), 3)
+        logger.setLevel(logging.NOTSET)

@@ -20,10 +20,11 @@ class GroceryItem:
 class PurchaseCandidate:
     """Container class for item that can be bought. WIP"""
 
-    def __init__(self, id: int, name: str, price: int):
+    def __init__(self, id: int, name: str, price: int, gi: GroceryItem):
         self.id = id
         self.name = name
         self.price = price
+        self.item = gi
 
     def __repr__(self):
         return f"Item(id={self.id}, name={self.name}, price={self.price})"
