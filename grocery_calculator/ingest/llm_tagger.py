@@ -7,7 +7,7 @@ import os
 import requests
 import sys
 
-from grocery_calculator.logging import setup_logger
+from grocery_calculator.logger import setup_logger
 
 ENDPOINT = os.getenv("TAGGING_ENDPOINT", "http://localhost:11434/api/generate")
 MODEL = os.getenv("TAGGING_MODEL", "deepseek-r1:7b")

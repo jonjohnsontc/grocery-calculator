@@ -33,6 +33,9 @@ price_history:
 stores:
   store_id: int,
   name: text,
+  address: text,
+  city: text,
+  zip_code: int
   location_lat: decimal,
   location_long: decimal,
 

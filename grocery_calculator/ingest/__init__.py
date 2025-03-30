@@ -3,7 +3,7 @@ from os import getenv
 from pathlib import Path
 
 from grocery_calculator.db import Database
-from grocery_calculator.logging import setup_logger
+from grocery_calculator.logger import setup_logger
 
 CONN_STR = getenv("CONN_STR")
 INGEST_SQL_FOLDER = Path(__file__).parents[1].joinpath("sql", "ingest")

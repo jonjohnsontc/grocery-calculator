@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS stores (
 
 CREATE TABLE IF NOT EXISTS store_locations (
     store_id INT NOT NULL,
+    address TEXT NOT NULL,
+    zip_code INT NOT NULL,
     location_lat DECIMAL(9, 6) NOT NULL,
     location_long DECIMAL(9, 6) NOT NULL,
     FOREIGN KEY (store_id) REFERENCES stores (store_id),
