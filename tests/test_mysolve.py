@@ -8,8 +8,6 @@ from grocery_calculator.mysolve import (
     Store,
 )
 
-from tests import suppress_logging
-
 
 class TestMySolve(unittest.TestCase):
 
@@ -116,3 +114,24 @@ class TestMySolve(unittest.TestCase):
         assert actual_x[("milk", "store1")] == 1
         assert actual_x[("bread", "store1")] == 1
         assert actual_x[("eggs", "store2")] == 1
+
+    # def test_solved_problem_from_lp_solution(self):
+    #     solved_problem = solve(self.STORES_2, self.INPUT_2_PURCHASE_CANDIDATES)
+
+    #     assert solved_problem.num_stores == 2
+    #     assert solved_problem.total_cost == 580
+
+    #     assert len(solved_problem.trips) == 2
+
+    #     trip1 = solved_problem.trips[0]
+    #     trip2 = solved_problem.trips[1]
+
+    #     assert trip1.store == "store1"
+    #     assert trip1.location == "123 Main St"
+    #     assert trip1.total == 300
+    #     assert len(trip1.items) == 3
+
+    #     assert trip2.store == "store2"
+    #     assert trip2.location == "456 Oak St"
+    #     assert trip2.total == 280
+    #     assert len(trip2.items) == 2

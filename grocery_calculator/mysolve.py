@@ -66,7 +66,7 @@ class GroceryTrip:
         self.store = store
         self.location = location
         self.total = 0
-        self.items = None
+        self.items = []
 
     def add_item(self, item: PurchaseCandidate):
         """Add item to items array and add cost to total"""
@@ -93,6 +93,25 @@ class SolvedProblem:
         self.num_stores = None
         self.total_cost = None
         self.trips = None
+
+    @staticmethod
+    def from_lp_solution(
+        x, y, problem, purchase_candidates: List[PurchaseCandidate]
+    ) -> "SolvedProblem":
+        """Create a SolvedProblem from the LP solution"""
+        result = SolvedProblem()
+        result.total_cost = problem.objective.value()
+        result.num_stores = sum(y[store].value() for store in y)
+
+        result.trips = []
+        for store in y:
+            if y[store].value() == 1:
+                trip = GroceryTrip(store, "")
+                for item in x:
+                    if x[item].value() == 1 and item[1] == store:
+                        trip.add_item(item)
+                result.trips.append(trip)
+        return result
 
     def to_dict(self):
         return {
@@ -134,17 +153,20 @@ def lp_solve(
         [(item.item.name, item.store.name) for item in pc],
         cat="Binary",
     )
-    y = LpVariable.dicts("y", [s.name for s in stores], cat="Binary")
+    y = LpVariable.dicts("y", [(s.name, s.address) for s in stores], cat="Binary")
 
     problem += lpSum(item.price * x[(item.item.name, item.store.name)] for item in pc)
 
     for category, items in items_by_cat.items():
         problem += lpSum(x[category, item.store.name] for item in items) == 1
 
-    problem += lpSum(y[store.name] for store in stores) <= max_stores
+    problem += lpSum(y[(store.name, store.address)] for store in stores) <= max_stores
 
     for item in pc:
-        problem += x[(item.item.name, item.store.name)] <= y[item.store.name]
+        problem += (
+            x[(item.item.name, item.store.name)]
+            <= y[(item.store.name, item.store.address)]
+        )
 
     problem.solve(PULP_CBC_CMD(msg=False))  # we don't want to see the solver output
     return (x, y, problem)
@@ -160,31 +182,8 @@ def solve(
     (x, y, problem) = lp_solve(valid_stores, purchase_candidates)
     if problem.status != 1:
         raise RuntimeError("Solver failed to find a solution")
-    results.total_cost = problem.objective.value()
 
-    stores_to_purchase_from: Set[str] = set()
-    items_to_purchase: Dict[str, List[PurchaseCandidate]] = {}
-    for item in purchase_candidates:
-        if x[(item.item.name, item.store.name)].value() == 1:
-            stores_to_purchase_from.add(item.store.name)
-            if item.store.name not in items_to_purchase:
-                items_to_purchase[item.store.name] = []
-            items_to_purchase[item.store.name].append(item)
-
-    results.num_stores = len(stores_to_purchase_from)
-    results.trips = []
-    for store in stores_to_purchase_from:
-        try:
-            store_obj = next(filter(lambda s: s == store, valid_stores))
-        except StopIteration:
-            raise RuntimeError("No store found in store obj, something's wrong")
-
-        trip = GroceryTrip(store_obj.name, store_obj.address)
-        for item in items_to_purchase[store]:
-            trip.add_item(item)
-
-        results.trips.append(trip)
-
+    results = SolvedProblem.from_lp_solution(x, y, problem, purchase_candidates)
     return results
 
 
