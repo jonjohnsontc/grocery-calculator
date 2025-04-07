@@ -30,6 +30,16 @@ class Store:
             raise ValueError("Not valid zip code, you passed %s", zip_code)
         self.zip_code = zip_code
 
+    def to_tuple(self):
+        return (self.name, self.address, self.zip_code)
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "address": self.address,
+            "zip_code": self.zip_code,
+        }
+
 
 @dataclass
 class PurchaseCandidate:
@@ -153,19 +163,19 @@ def lp_solve(
         [(item.item.name, item.store.name) for item in pc],
         cat="Binary",
     )
-    y = LpVariable.dicts("y", [(s.name, s.address) for s in stores], cat="Binary")
+    y = LpVariable.dicts("y", [s.to_tuple() for s in stores], cat="Binary")
 
     problem += lpSum(item.price * x[(item.item.name, item.store.name)] for item in pc)
 
     for category, items in items_by_cat.items():
         problem += lpSum(x[category, item.store.name] for item in items) == 1
 
-    problem += lpSum(y[(store.name, store.address)] for store in stores) <= max_stores
+    problem += lpSum(y[store.to_tuple()] for store in stores) <= max_stores
 
     for item in pc:
         problem += (
             x[(item.item.name, item.store.name)]
-            <= y[(item.store.name, item.store.address)]
+            <= y[(item.store.name, item.store.address, item.store.zip_code)]
         )
 
     problem.solve(PULP_CBC_CMD(msg=False))  # we don't want to see the solver output
