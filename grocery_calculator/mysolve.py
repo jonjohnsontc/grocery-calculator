@@ -114,11 +114,16 @@ class SolvedProblem:
         result.num_stores = sum(y[store].value() for store in y)
 
         result.trips = []
+        # TODO: Figure out how to create without iterating over all purhase candidates
+        # for each store
         for store in y:
             if y[store].value() == 1:
-                trip = GroceryTrip(store, "")
-                for item in x:
-                    if x[item].value() == 1 and item[1] == store:
+                trip = GroceryTrip(store[0], store[1])
+                for item in purchase_candidates:
+                    if (
+                        x[(item.item.name, item.store.name)].value() == 1
+                        and item.store.name == store[0]
+                    ):
                         trip.add_item(item)
                 result.trips.append(trip)
         return result
@@ -173,10 +178,7 @@ def lp_solve(
     problem += lpSum(y[store.to_tuple()] for store in stores) <= max_stores
 
     for item in pc:
-        problem += (
-            x[(item.item.name, item.store.name)]
-            <= y[(item.store.name, item.store.address, item.store.zip_code)]
-        )
+        problem += x[(item.item.name, item.store.name)] <= y[item.store.to_tuple()]
 
     problem.solve(PULP_CBC_CMD(msg=False))  # we don't want to see the solver output
     return (x, y, problem)

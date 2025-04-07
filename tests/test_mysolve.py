@@ -115,23 +115,23 @@ class TestMySolve(unittest.TestCase):
         assert actual_x[("bread", "store1")] == 1
         assert actual_x[("eggs", "store2")] == 1
 
-    # def test_solved_problem_from_lp_solution(self):
-    #     solved_problem = solve(self.STORES_2, self.INPUT_2_PURCHASE_CANDIDATES)
+    def test_solved_problem_from_lp_solution(self):
+        solved_problem = solve(self.STORES_2, self.INPUT_2_PURCHASE_CANDIDATES)
 
-    #     assert solved_problem.num_stores == 2
-    #     assert solved_problem.total_cost == 580
+        assert solved_problem.num_stores == 2
+        assert solved_problem.total_cost == 580
 
-    #     assert len(solved_problem.trips) == 2
+        assert len(solved_problem.trips) == 2
 
-    #     trip1 = solved_problem.trips[0]
-    #     trip2 = solved_problem.trips[1]
+        trip1 = solved_problem.trips[0]
+        trip2 = solved_problem.trips[1]
 
-    #     assert trip1.store == "store1"
-    #     assert trip1.location == "123 Main St"
-    #     assert trip1.total == 300
-    #     assert len(trip1.items) == 3
+        assert trip1.store == "store1", trip1.store
+        assert trip1.location == "123 Main St", trip1.location
+        assert trip1.total == 300, trip1.total
+        assert len(trip1.items) == 2, len(trip1.items)
 
-    #     assert trip2.store == "store2"
-    #     assert trip2.location == "456 Oak St"
-    #     assert trip2.total == 280
-    #     assert len(trip2.items) == 2
+        assert trip2.store == "store2", trip2.store
+        assert trip2.location == "456 Oak St", trip2.location
+        assert trip2.total == 280, trip2.total
+        assert len(trip2.items) == 1, len(trip2.items)
