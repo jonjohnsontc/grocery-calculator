@@ -9,6 +9,12 @@ from typing import Dict, List, Optional, Set, Tuple
 
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum, PULP_CBC_CMD
 
+from grocery_calculator.reader import read_sql, SQL_FOLDER
+from grocery_calculator.db import Database
+
+
+CANDIDATE_QUERY = read_sql(f"{SQL_FOLDER}/solve/find_candidates.sql")
+
 
 @dataclass
 class GroceryItem:
@@ -22,13 +28,14 @@ class GroceryItem:
 class Store:
     """Container class for store to purchase from. WIP"""
 
-    def __init__(self, id: int, name: str, address: str, zip_code: str):
-        self.id = id
-        self.name = name
-        self.address = address
-        if len(zip_code) != 5 or not all([d.isdigit() for d in zip_code]):
-            raise ValueError("Not valid zip code, you passed %s", zip_code)
-        self.zip_code = zip_code
+    id: int
+    name: str
+    address: str
+    zip_code: str
+
+    def __post_init__(self):
+        if len(self.zip_code) != 5 or not self.zip_code.isdigit():
+            raise ValueError("Not valid zip code, you passed %s", self.zip_code)
 
     def to_tuple(self):
         return (self.name, self.address, self.zip_code)
@@ -242,6 +249,8 @@ def get_items(parsed_items: List[GroceryItem]) -> Optional[List[PurchaseCandidat
 
 def find_candidates(item: GroceryItem) -> Optional[List[PurchaseCandidate]]:
     """Find candidates for a given item"""
+    query = CANDIDATE_QUERY
+    # Here you would execute the query against your database P
 
     # Placeholder for actual logic to find candidates
     # In a real implementation, this would query a database or API

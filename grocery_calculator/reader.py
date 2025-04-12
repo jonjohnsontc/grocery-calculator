@@ -7,6 +7,10 @@ of a .sql file into an object which can access any queries contained within base
 on their name passed through.
 """
 
+from pathlib import Path
+
+SQL_FOLDER = Path(__file__).parent.joinpath("sql").as_posix()
+
 
 class Reader:
     """
