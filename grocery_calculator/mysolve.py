@@ -200,11 +200,60 @@ def solve(
 
 
 def parse_grocery_list(text_list: str) -> Optional[List[GroceryItem]]:
-    pass
+    """Parse grocery list from text input"""
+    potential_items = text_list.splitlines()
+    parsed_items = []
+    for potential_item in potential_items:
+        stripped_item = potential_item.strip()
+        if not stripped_item:
+            continue
+        qty, item = parse_qty(stripped_item)
+        parsed_items.append(GroceryItem(name=item, qty=qty))
+    return parsed_items
+
+
+def parse_qty(item: str) -> Tuple[int, str]:
+    """Return quantity and item name from string"""
+    default = (1, item)
+    if item[0].isdigit():
+        qty = ""
+        for idx, char in enumerate(item):
+            if char.isdigit():
+                qty += char
+            elif char.isspace():
+                break
+            else:
+                return default
+        return (int(qty), item[idx:].strip())
+    return default
 
 
 def get_items(parsed_items: List[GroceryItem]) -> Optional[List[PurchaseCandidate]]:
-    pass
+    """Return list of purchase candidates"""
+    candidates: List[PurchaseCandidate] = []
+
+    for item in parsed_items:
+        potential_candides = find_candidates(item)
+        if not potential_candides:
+            print(f"No candidates found for {item.name}")
+            continue
+    return candidates
+
+
+def find_candidates(item: GroceryItem) -> Optional[List[PurchaseCandidate]]:
+    """Find candidates for a given item"""
+
+    # Placeholder for actual logic to find candidates
+    # In a real implementation, this would query a database or API
+    return [
+        PurchaseCandidate(
+            id=1,
+            store=Store(1, "Store A", "123 Main St", "12345"),
+            name=item.name,
+            price=200,
+            item=item,
+        )
+    ]
 
 
 if __name__ == "__main__":

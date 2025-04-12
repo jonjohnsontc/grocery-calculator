@@ -3,6 +3,10 @@ import unittest
 from grocery_calculator.mysolve import (
     solve,
     lp_solve,
+    find_candidates,
+    get_items,
+    parse_grocery_list,
+    parse_qty,
     GroceryItem,
     PurchaseCandidate,
     Store,
@@ -99,9 +103,6 @@ class TestMySolve(unittest.TestCase):
         ),
     ]
 
-    def test_solve_returns_completed_problem(self):
-        pass
-
     def test_lp_solve_returns_correct_program(self):
 
         (actual_x, actual_y, actual) = lp_solve(
@@ -135,3 +136,60 @@ class TestMySolve(unittest.TestCase):
         assert trip2.location == "456 Oak St", trip2.location
         assert trip2.total == 280, trip2.total
         assert len(trip2.items) == 1, len(trip2.items)
+
+    def test_parse_grocery_list_returns_correct_items(self):
+        grocery_list = self.INPUT_1
+        expected_items = self.INPUT_1_EXPECTED_PARSED_RESULT
+
+        parsed_items = parse_grocery_list(grocery_list)
+
+        assert len(parsed_items) == len(expected_items)
+        for i in range(len(parsed_items)):
+            assert (
+                parsed_items[i].name == expected_items[i].name
+            ), f"parsed: {parsed_items[i].name}, expected: {expected_items[i].name}"
+            assert (
+                parsed_items[i].qty == expected_items[i].qty
+            ), f"parsed: {parsed_items[i].qty}, expected: {expected_items[i].qty}"
+
+    def test_parse_qty_string_returns_correct_qty(self):
+        self.assertEqual(parse_qty("2lbs Pasta"), (1, "2lbs Pasta"))
+        self.assertEqual(parse_qty("1.5kg Apples"), (1, "1.5kg Apples"))
+        self.assertEqual(parse_qty("3 cans of beans"), (3, "cans of beans"))
+        self.assertEqual(parse_qty("2 bags of chips"), (2, "bags of chips"))
+        self.assertEqual(parse_qty("1 dozen eggs"), (1, "dozen eggs"))
+        self.assertEqual(parse_qty("4.5 liters of milk"), (1, "4.5 liters of milk"))
+
+    # def test_get_items_returns_correct_candidates(self):
+    #     expected_candidates = self.INPUT_2_PURCHASE_CANDIDATES
+    #     actual_candidates = get_items(self.INPUT_2_PARSED_RESULT)
+
+    #     self.assertEqual(len(actual_candidates), len(expected_candidates))
+    #     for i in range(len(actual_candidates)):
+    #         self.assertEqual(
+    #             actual_candidates[i].item.qty,
+    #             expected_candidates[i].item.qty,
+    #             f"parsed: {actual_candidates[i].item.qty}, expected: {expected_candidates[i].item.qty}",
+    #         )
+    #         self.assertEqual(
+    #             actual_candidates[i].store.name,
+    #             expected_candidates[i].store.name,
+    #             f"parsed: {actual_candidates[i].store.name}, expected: {expected_candidates[i].store.name}",
+    #         )
+
+    # def test_find_candidates_returns_correct_candidates(self):
+    #     expected_candidates = self.INPUT_2_PURCHASE_CANDIDATES
+    #     actual_candidates = find_candidates(self.INPUT_2_PARSED_RESULT[0])
+
+    #     self.assertEqual(len(actual_candidates), len(expected_candidates))
+    #     for i in range(len(actual_candidates)):
+    #         self.assertEqual(
+    #             actual_candidates[i].item.qty,
+    #             expected_candidates[i].item.qty,
+    #             f"parsed: {actual_candidates[i].item.qty}, expected: {expected_candidates[i].item.qty}",
+    #         )
+    #         self.assertEqual(
+    #             actual_candidates[i].store.name,
+    #             expected_candidates[i].store.name,
+    #             f"parsed: {actual_candidates[i].store.name}, expected: {expected_candidates[i].store.name}",
+    #         )
