@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from os import getenv
 from pathlib import Path
 
@@ -17,14 +17,14 @@ class Ingest(ABC):
     def __init__(self, conn_str=None):
         self.db = Database(conn_str)
         self.db.connect()
-        self.logger = setup_logger(self.__module__)
+        self.logger = setup_logger(self.__class__.__name__)
 
     def copy_data(self, location: str) -> None:
         """Copy raw data to store for preprocessing and return number of rows copied"""
         pass
 
-    def preprocess(self) -> dict:
-        pass
+    @abstractmethod
+    def preprocess(self) -> dict: ...
 
-    def update(self) -> None:
-        pass
+    @abstractmethod
+    def update(self) -> None: ...

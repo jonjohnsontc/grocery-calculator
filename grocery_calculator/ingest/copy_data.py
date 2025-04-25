@@ -38,18 +38,24 @@ def get_parser() -> argparse.ArgumentParser:
 
 def copy_raw_data(store: str, directory: Path, db: str) -> None:
     if store not in SOURCES:
-        raise ValueError("Valid store sources are %s, you passed %s", SOURCES, store)
+        print("Valid store sources are %s, you passed %s", SOURCES, store)
+        SystemExit(1)
     elif store in ["ralphs", "trader_joes"]:
-        raise NotImplementedError("Not yet implemented")
+        print("Not yet implemented")
+        SystemExit(1)
     elif store == "target":
         ti_script = INGEST_SQL_FOLDER.joinpath("copy_target_2.sql")
         subprocess.run(
-            f"cat {ti_script} | duckdb {DB}", shell=True, stderr=subprocess.STDOUT
+            f"cat {ti_script} | duckdb {db}", shell=True, stderr=subprocess.STDOUT
         )
     return
 
 
-if __name__ == "__main__":
+def main():
     parser = get_parser()
     args = parser.parse_args()
     copy_raw_data(args.store, args.folder, args.db)
+
+
+if __name__ == "__main__":
+    main()

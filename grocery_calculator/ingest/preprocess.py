@@ -1,5 +1,5 @@
 """
-Preprocess raw data from stores into valid format for solving shopping trips 
+Preprocess raw data from stores into valid format for solving shopping trips
 """
 
 import argparse
@@ -40,7 +40,11 @@ def preprocess_data(store: str, db: str) -> None:
     pass
 
 
-if __name__ == "__main__":
+def main():
     parser = get_parser()
     args = parser.parse_args()
     preprocess_data(args.store, args.db)
+
+
+if __name__ == "__main__":
+    main()

@@ -103,7 +103,7 @@ I type up grocery list and input it into the cli tool. The cli tool spits out a 
 # Example Plan
 
 - Bagels
-- 2lbs Pasta
+- Pasta 2lbs
 - Extra Creamy Oatmilk
 - Coca-Cola 2 liter
 - Potato Bread
