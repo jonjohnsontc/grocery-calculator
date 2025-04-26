@@ -9,4 +9,12 @@ class TraderJoesIngest(Ingest):
         self._tag_item = None
 
     def copy_data(self, location):
-        copy_script = Reader(f"{INGEST_SQL_FOLDER}/copy_trader_joes.sql")
+        queries = Reader(f"{INGEST_SQL_FOLDER}/copy_trader_joes.sql")
+        self.db.execute_query(queries.create_joes_extracted)
+        self.db.execute_query(queries.copy_trader_joes_files, [location])
+
+    def preprocess(self):
+        pass
+
+    def update(self):
+        pass

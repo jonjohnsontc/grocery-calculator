@@ -10,6 +10,7 @@ from pathlib import Path
 
 from grocery_calculator.env import get_project_details, SOURCES
 from grocery_calculator.ingest.stores.target import TargetIngest
+from grocery_calculator.ingest.stores.trader_joes import TraderJoesIngest
 from grocery_calculator.ingest import INGEST_SQL_FOLDER
 
 DB = os.getenv("DB_CONN_STR")
@@ -40,9 +41,12 @@ def copy_raw_data(store: str, directory: Path, db: str) -> None:
     if store not in SOURCES:
         print("Valid store sources are %s, you passed %s", SOURCES, store)
         SystemExit(1)
-    elif store in ["ralphs", "trader_joes"]:
+    elif store in ["ralphs"]:
         print("Not yet implemented")
         SystemExit(1)
+    elif store == "trader_joes":
+        joes = TraderJoesIngest(db)
+        joes.copy_data(directory)
     elif store == "target":
         ti_script = INGEST_SQL_FOLDER.joinpath("copy_target_2.sql")
         subprocess.run(
