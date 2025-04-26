@@ -24,7 +24,7 @@ class Database:
             self.con = duckdb.connect(":memory:")
 
     def execute_query(
-        self, text: str, params: Optional[Union[dict, list]] = None
+        self, text: str, params: Optional[Union[dict, list]] = None, log: bool = True
     ) -> Optional[List[Any]]:
         self._validate()
 
@@ -42,8 +42,15 @@ class Database:
             return None
         return res.fetchall()
 
-    def execute_many(self, text: str, params: list) -> Optional[List[Any]]:
+    def execute_many(
+        self, text: str, params: list, log: bool = True
+    ) -> Optional[List[Any]]:
         self._validate()
+
+        self.logger.info("Executing query %s", text.replace("\n", " "))
+        if params:
+            self.logger.info("With params %s", params)
+
         res: Union[duckdb.DuckDBPyRelation, duckdb.DuckDBPyConnection]
         res = self.con.executemany(text, parameters=params)
 

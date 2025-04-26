@@ -11,11 +11,11 @@ class TestDB(unittest.TestCase):
 
     def suppress_logs_and_execute_query(self, db, query, params=None):
         with suppress_logging():
-            return db.execute_query(query, params=params)
+            return db.execute_query(query, params=params, log=False)
 
     def suppress_logs_and_execute_many(self, db, query, params=None):
         with suppress_logging():
-            return db.execute_many(query, params=params)
+            return db.execute_many(query, params=params, log=False)
 
     def test_connect_connects_to_database(self):
         db = Database()
@@ -57,6 +57,22 @@ class TestDB(unittest.TestCase):
         )
         self.suppress_logs_and_execute_query(
             db, "insert into test (id, val) VALUES (12, 'hawk')"
+        )
+        actual = self.suppress_logs_and_execute_query(db, "select * from test")
+
+        self.assertEqual(len(actual), 1)
+        self.assertEqual(actual[0][0], 12)
+        self.assertEqual(actual[0][1], "hawk")
+
+    def test_execute_query_executes_bound_statement_against_store(self):
+        db = Database()
+        db.connect()
+
+        self.suppress_logs_and_execute_query(
+            db, "create table test (id INTEGER, val TEXT)"
+        )
+        self.suppress_logs_and_execute_query(
+            db, "insert into test (id, val) VALUES (12, ?)", params=["hawk"]
         )
         actual = self.suppress_logs_and_execute_query(db, "select * from test")
 

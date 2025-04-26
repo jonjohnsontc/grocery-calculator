@@ -2,6 +2,7 @@ import unittest
 
 from grocery_calculator.db import Database
 from grocery_calculator.model.seed import seed_db
+from tests import suppress_logging
 
 
 class TestSeed(unittest.TestCase):
@@ -10,11 +11,12 @@ class TestSeed(unittest.TestCase):
         db = Database()
         db.connect()
 
-        seed_db(db)
+        with suppress_logging():
+            seed_db(db)
 
-        actual = db.execute_query(
-            "SELECT list(table_name) FROM (SELECT distinct table_name AS table_name FROM information_schema.columns)"
-        )
+            actual = db.execute_query(
+                "SELECT list(table_name) FROM (SELECT distinct table_name AS table_name FROM information_schema.columns)",
+            )
         actual_table_names = actual[0][0]
         expected_table_names = [
             "categories",
